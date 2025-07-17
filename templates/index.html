@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Tales - Interactive AI Stories</title>
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --primary-light: #8e54e9;
+            --secondary: #2575fc;
+            --dark: #333;
+            --light: #f9f9f9;
+            --accent: #ff7e5f;
+            --accent-light: #feb47b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2rem 1rem;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: 100%;
+            padding: 1rem;
+        }
+        
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            align-items: center;
+        }
+        
+        .story-title {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .story-title h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .story-title p {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .paragraph-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .paragraph-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .paragraph-header {
+            background: linear-gradient(to right, var(--primary-light), var(--primary));
+            color: white;
+            padding: 1rem 1.5rem;
+        }
+        
+        .paragraph-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .paragraph-content {
+            padding: 1.5rem;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+        
+        .paragraph-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .choice-buttons {
+            display: flex;
+            gap: 1rem;
+            padding: 0 1.5rem 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .choice-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .choice-btn.primary {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+        }
+        
+        .choice-btn.secondary {
+            background: linear-gradient(to right, var(--accent), var(--accent-light));
+            color: white;
+        }
+        
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .choice-btn:active {
+            transform: translateY(0);
+        }
+        
+        footer {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .choice-buttons {
+                flex-direction: column;
+            }
+            
+            .choice-btn {
+                width: 100%;
+            }
+            
+            .story-title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .paragraph-header h2 {
+                font-size: 1.2rem;
+            }
+        }
+        
+        .story-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 20;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--accent-light));
+            width: 0;
+            transition: width 0.3s;
+        }
+        
+        .return-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+        
+        .return-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .undo-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            border: none;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .undo-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        .undo-button:active {
+            transform: translateY(-2px);
+        }
+        
+        .undo-button::before {
+            content: "↩";
+            font-size: 1.8rem;
+            margin-right: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a class="logo">Neural Tales</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="story-title">
+            <h1>Your Unique Story</h1>
+            <p>An interactive AI-generated story</p>
+        </div>
+
+        {% for i in story %}
+            <div class="paragraph-container">
+                <div class="paragraph-header">
+                    <h2>{{ i[0] }}</h2>
+                </div>
+                <img src="{{ i[4] }}" alt="Story illustration for {{ i[0] }}" class="paragraph-image">
+                <div class="paragraph-content">
+                    <p>{{ i[1] }}</p>
+                </div>
+                <div class="choice-buttons">
+                    <a href="/choice1" class="choice-btn primary">{{ i[2] }}</a>
+                    <a href="/choice2" class="choice-btn secondary">{{ i[3] }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <a href="/undo" class="undo-button">Undo</a>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Neural Tales | Experience AI-Generated Interactive Stories</p>
+        </div>
+    </footer>
+
+    <script>
+        // Calculate and update progress bar as user scrolls
+        window.addEventListener('scroll', function() {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.body.scrollHeight;
+            const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
+            document.querySelector('.progress-bar').style.width = Math.min(progress, 100) + '%';
+            
+            localStorage.setItem('scrollPosition', scrollPosition);
+        });
+        
+        // Animate paragraphs when they come into view
+        document.addEventListener('DOMContentLoaded', function() {
+            const paragraphs = document.querySelectorAll('.paragraph-container');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            paragraphs.forEach(paragraph => {
+                paragraph.style.opacity = '0';
+                paragraph.style.transform = 'translateY(20px)';
+                observer.observe(paragraph);
+            });
+            
+            // Scroll to the last position on page load/refresh
+            setTimeout(function() {
+                if (paragraphs.length > 0) {
+                    const savedScrollPosition = localStorage.getItem('scrollPosition');
+                    
+                    if (savedScrollPosition) {
+                        window.scrollTo(0, parseInt(savedScrollPosition));
+                    } else {
+                        const lastParagraph = paragraphs[paragraphs.length - 1];
+                        lastParagraph.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>

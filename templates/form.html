@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Tales - AI Story Generator</title>
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --primary-light: #8e54e9;
+            --secondary: #2575fc;
+            --dark: #333;
+            --light: #f9f9f9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--light);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        header p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-container {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(142, 84, 233, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .optional {
+            font-size: 0.8rem;
+            color: #666;
+            margin-left: 0.5rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f1f1f1;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .inspiration-examples {
+            background: #f1f1f1;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .inspiration-examples h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .inspiration-examples ul {
+            list-style-type: none;
+        }
+
+        .inspiration-examples li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Neural Tales</h1>
+            <p>Create captivating AI-generated stories tailored to your imagination</p>
+        </header>
+        
+     <div class="form-container">
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+            <label for="genre">Story Genre</label>
+            <select id="genre" name="genre" required>
+                <option value="" disabled selected>Select a genre</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="science_fiction">Science Fiction</option>
+                <option value="mystery">Mystery/Thriller</option>
+                <option value="romance">Romance</option>
+                <option value="horror">Horror</option>
+                <option value="adventure">Adventure</option>
+                <option value="historical">Historical Fiction</option>
+                <option value="fairy_tale">Fairy Tale</option>
+                <option value="dystopian">Dystopian</option>
+                <option value="comedy">Comedy</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="plot_description">Story Description</label>
+            <textarea id="plot_description" name="plot_description" required
+                placeholder="Describe your story idea, plot elements, characters, setting, etc."></textarea>
+        </div>
+
+        <div class="inspiration-examples">
+            <h3>Need inspiration? Try including:</h3>
+            <ul>
+                <li>Main characters and their traits</li>
+                <li>Setting (time period, location)</li>
+                <li>Major plot points or conflict</li>
+                <li>Mood or theme you'd like to explore</li>
+            </ul>
+        </div>
+
+        <div class="form-group">
+            <label for="target_audience">Target Audience <span class="optional">(Optional)</span></label>
+            <select id="target_audience" name="target_audience">
+                <option value="" disabled selected>Choose an audience</option>
+                <option value="children">Children</option>
+                <option value="young_adult">Young Adult</option>
+                <option value="adult">Adult</option>
+                <option value="all_ages">All Ages</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="story_length">Story Length <span class="optional">(Optional)</span></label>
+            <select id="story_length" name="story_length">
+                <option value="" disabled selected>Choose a length</option>
+                <option value="short">Short Story (1,000-7,500 words)</option>
+                <option value="medium">Novelette (7,500-20,000 words)</option>
+                <option value="long">Novella (20,000-50,000 words)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="writing_style">Preferred Writing Style <span class="optional">(Optional)</span></label>
+            <select id="writing_style" name="writing_style">
+                <option value="" disabled selected>Choose a style</option>
+                <option value="descriptive">Descriptive and detailed</option>
+                <option value="concise">Concise and to-the-point</option>
+                <option value="poetic">Poetic and lyrical</option>
+                <option value="humorous">Humorous and lighthearted</option>
+                <option value="dark">Dark and atmospheric</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn">Generate My Story</button>
+    </form>
+</div>
+        
+        <footer>
+            <p>© 2025 Neural Tales | AI-Powered Storytelling Platform</p>
+        </footer>
+    </div>
+</body>
+</html>
